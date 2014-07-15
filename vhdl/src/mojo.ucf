@@ -5,6 +5,8 @@ NET "i_clk50m" TNM_NET = "clk50";
 TIMESPEC TS_clk = PERIOD "clk50" 50 MHz HIGH 50 %;
 
 NET "i_clk50m" LOC = P56;
+NET "i_clk50m" CLOCK_DEDICATED_ROUTE = FALSE;
+
 NET "i_rst_n" LOC = P38;
 
 NET "o_led[0]" LOC = P134;
@@ -23,44 +25,95 @@ NET "o_serial_tx" IOSTANDARD = LVTTL;
 NET "i_serial_rx" IOSTANDARD = LVTTL;
 NET "i_serial_rx" PULLUP;
 
+PIN "u_clk_pll/clkout1_buf.O" CLOCK_DEDICATED_ROUTE = FALSE;
+
 # dac interface loc constaints
-NET "o_dac_pin_mode" LOC = P74;  #--  L74N_1
-NET "o_dac_sleep" LOC = P75;  #--  L74P_1
-NET "o_dac_mode" LOC = P78;   #--  L47N_1
-NET "o_dac_cmode" LOC = P79;  #--  L47P_1
-NET "o_dac_clk_p" LOC = P81;  #--  L46P_1
-NET "o_dac_clk_n" LOC = P80;  #--  L46N_1
-NET "o_dac_DB[0]" LOC = P82;  #--  L45N_1
-NET "o_dac_DB[1]" LOC = P83;  #--  L45P_1
-NET "o_dac_DB[2]" LOC = P84;  #--  L43N_1
-NET "o_dac_DB[3]" LOC = P85;  #--  L43P_1
-NET "o_dac_DB[4]" LOC = P87;  #--  L42N_1
-NET "o_dac_DB[5]" LOC = P88;  #--  L42P_1
-NET "o_dac_DB[6]" LOC = P92;  #--  L41N_1
-NET "o_dac_DB[7]" LOC = P93;  #--  L41P_1
-NET "o_dac_DB[8]" LOC = P94;  #--  L40N_1
-NET "o_dac_DB[9]" LOC = P95;  #--  L40P_1
-NET "o_dac_DB[10]" LOC = P97; #--  L34N_1
-NET "o_dac_DB[11]" LOC = P98; #--  L34P_1
+#--  L74N_1
+NET "o_dac_pin_mode" LOC = P74;
+#--  L74P_1
+NET "o_dac_sleep" LOC = P75;
+#--  L47N_1
+NET "o_dac_mode" LOC = P78;
+#--  L47P_1
+NET "o_dac_cmode" LOC = P79;
+#--  L46P_0
+NET "o_dac_clk_p" LOC = P112;
+#--  L46N_0
+NET "o_dac_clk_n" LOC = P111;
+#--  L45N_1 
+NET "o_dac_DB[0]" LOC = P82;
+#--  L45P_1
+NET "o_dac_DB[1]" LOC = P83;
+#--  L43N_1
+NET "o_dac_DB[2]" LOC = P84;
+#--  L43P_1
+NET "o_dac_DB[3]" LOC = P85;
+#--  L42N_1
+NET "o_dac_DB[4]" LOC = P87;
+#--  L42P_1
+NET "o_dac_DB[5]" LOC = P88;
+#--  L41N_1
+NET "o_dac_DB[6]" LOC = P92;
+#--  L41P_1
+NET "o_dac_DB[7]" LOC = P93;
+#--  L40N_1
+NET "o_dac_DB[8]" LOC = P94;
+#--  L40P_1
+NET "o_dac_DB[9]" LOC = P95;
+#--  L34N_1
+NET "o_dac_DB[10]" LOC = P97;
+#--  L34P_1
+NET "o_dac_DB[11]" LOC = P98;
 
 # pull/down for dac
-NET "o_dac_pin_mode" PULLDOWN; 
-NET "o_dac_sleep"    PULLDOWN;
-NET "o_dac_mode"     PULLDOWN;
-NET "o_dac_cmode"    PULLDOWN;
-NET "o_dac_clk_p"    PULLDOWN;
-NET "o_dac_clk_n"    PULLDOWN;
-NET "o_dac_DB[0]"    PULLDOWN; 
-NET "o_dac_DB[1]"    PULLDOWN;  
-NET "o_dac_DB[2]"    PULLDOWN;  
-NET "o_dac_DB[3]"    PULLDOWN;  
-NET "o_dac_DB[4]"    PULLDOWN;  
-NET "o_dac_DB[5]"    PULLDOWN;  
-NET "o_dac_DB[6]"    PULLDOWN;  
-NET "o_dac_DB[7]"    PULLDOWN;  
-NET "o_dac_DB[8]"    PULLDOWN;  
-NET "o_dac_DB[9]"    PULLDOWN;  
-NET "o_dac_DB[10]"   PULLDOWN;  
-NET "o_dac_DB[11]"   PULLDOWN;
+NET "o_dac_pin_mode" PULLDOWN;
+NET "o_dac_sleep" PULLDOWN;
+NET "o_dac_mode" PULLDOWN;
+NET "o_dac_cmode" PULLDOWN;
+#NET "o_dac_clk_p" PULLDOWN;
+#NET "o_dac_clk_n" PULLDOWN;
+#NET "o_dac_DB[0]" PULLDOWN;
+#NET "o_dac_DB[1]" PULLDOWN;
+#NET "o_dac_DB[2]" PULLDOWN;
+#NET "o_dac_DB[3]" PULLDOWN;
+#NET "o_dac_DB[4]" PULLDOWN;
+#NET "o_dac_DB[5]" PULLDOWN;
+#NET "o_dac_DB[6]" PULLDOWN;
+#NET "o_dac_DB[7]" PULLDOWN;
+#NET "o_dac_DB[8]" PULLDOWN;
+#NET "o_dac_DB[9]" PULLDOWN;
+#NET "o_dac_DB[10]" PULLDOWN;
+#NET "o_dac_DB[11]" PULLDOWN;
 
 
+
+# PlanAhead Generated IO constraints 
+
+NET "i_clk50m" IOSTANDARD = LVCMOS33;
+NET "i_rst_n" IOSTANDARD = LVCMOS33;
+NET "o_dac_cmode" IOSTANDARD = LVCMOS33;
+NET "o_dac_mode" IOSTANDARD = LVCMOS33;
+NET "o_dac_pin_mode" IOSTANDARD = LVCMOS33;
+NET "o_dac_sleep" IOSTANDARD = LVCMOS33;
+NET "o_dac_clk_p" IOSTANDARD = LVCMOS33;
+NET "o_dac_clk_n" IOSTANDARD = LVCMOS33;
+NET "o_led[0]" IOSTANDARD = LVCMOS33;
+NET "o_led[1]" IOSTANDARD = LVCMOS33;
+NET "o_led[2]" IOSTANDARD = LVCMOS33;
+NET "o_led[3]" IOSTANDARD = LVCMOS33;
+NET "o_led[4]" IOSTANDARD = LVCMOS33;
+NET "o_led[5]" IOSTANDARD = LVCMOS33;
+NET "o_led[6]" IOSTANDARD = LVCMOS33;
+NET "o_led[7]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[11]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[10]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[9]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[8]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[7]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[6]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[5]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[4]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[3]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[1]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[2]" IOSTANDARD = LVCMOS33;
+NET "o_dac_DB[0]" IOSTANDARD = LVCMOS33;

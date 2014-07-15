@@ -154,21 +154,48 @@ BEGIN
         i_rst_n <= '0';  -- reset asserted board level
         wait for 30 ns;
         i_rst_n <= '1';  -- reset deasserted on board level 
-        wait for 700 us;  -- wait for reset and DCM to lock in simulation.
- 
-        -- turn LEDs on ( address 0x03 )
-        serial_send( x"00", i_serial_rx );
-        wait for 40 us;
-        serial_send( x"55", i_serial_rx );
-        wait for 40 us;
-        serial_send( x"00", i_serial_rx );
-        wait for 40 us;
-        serial_send( x"AA", i_serial_rx );
-        wait for 40 us;
-
-        -- read back value from led register
-        serial_send( x"80", i_serial_rx );
-		
+--        wait for 700 us;  -- wait for reset and DCM to lock in simulation.
+-- 
+--        -- turn LEDs on ( address 0x03 )
+--        serial_send( x"00", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"55", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"00", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"AA", i_serial_rx );
+--        wait for 40 us;
+--
+--        -- read back value from led register
+--        serial_send( x"80", i_serial_rx );
+--        wait for 40 us;
+--
+--        -- load nco with a value
+--        serial_send( x"08", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"20", i_serial_rx ); -- gives 1 phase step per clock
+--        wait for 40 us;
+--
+--        serial_send( x"09", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"00", i_serial_rx ); -- gives 1 phase step per clock
+--        wait for 40 us;
+--
+--        serial_send( x"0A", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"00", i_serial_rx ); -- gives 1 phase step per clock
+--        wait for 40 us;
+--
+--        serial_send( x"0B", i_serial_rx );
+--        wait for 40 us;
+--        serial_send( x"00", i_serial_rx ); -- gives 1 phase step per clock
+--        wait for 40 us;
+--
+--        
+--        -- let nco run..
+--        wait for 100 us;
+--		
+--
         wait;
     end process;
 

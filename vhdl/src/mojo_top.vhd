@@ -94,6 +94,31 @@ architecture system of mojo_top is
     );
     end component;
 
+    component mojo_modulator is
+        generic (
+            ftw_reg0_addr   : integer := 8;  -- address in memory of this register
+            ftw_reg1_addr   : integer := 9;  -- "
+            ftw_reg2_addr   : integer := 10; -- "
+            ftw_reg3_addr   : integer := 11  -- "
+        );
+        port (
+            -- Databus Clock & reset ---------------------------------
+            i_clk_db        : in  std_logic; -- data bus clock
+            i_srst_db       : in  std_logic; -- reset for databus clk
+            -- Databus signals ---------------------------------------
+            i_db_addr       : in  std_logic_vector(6 downto 0);
+            i_db_wdata      : in  std_logic_vector(7 downto 0);
+            o_db_rdata      : out std_logic_vector(7 downto 0);
+            i_db_rstrb      : in  std_logic;
+            i_db_wstrb      : in  std_logic;
+            -- DSP Sample Clocks & Reset ----------------------------- 
+            i_clk_dsp       : in  std_logic; -- dsp sample rate clock (>= db_clk)
+            i_srst_dsp      : in  std_logic; -- reset
+            ---DSP Samples Out ---------------------------------------
+            o_dac_samples   : out signed(15 downto 0)
+        );
+    end component mojo_modulator;
+
     ----------------------------------
     -- Signal for this level
     ----------------------------------
@@ -104,16 +129,21 @@ architecture system of mojo_top is
     signal db_wstrb         : std_logic;
 
     -- reset timer
-    signal reset_timer      : unsigned( 16 downto 0 );
+    signal reset_timer      : unsigned( 15 downto 0 );
 
     signal clk_50           : std_logic;  -- input 50 MHz clock after clock buffer
     signal srst_50          : std_logic;  -- 50 MHz sync reset, active high..
 
     -- DCM clock signals
+    signal clk_100m          : std_logic; -- 100 Mhz clock before global buffer.
     signal clk_100           : std_logic; --  100 MHz clock
+    signal dac_clk           : std_logic;
     signal clk_100_locked    : std_logic; --  clock 100 is locked. (for srst_100) 
     signal clk_100_dcm_rst   : std_logic; --  reset for dcm
     signal srst_100          : std_logic; --  sync reset for 100 MHz clock domain (active high)
+
+    -- dac samples (from modulator)
+    signal dac_sample        : signed(15 downto 0);  -- gets scaled to 12 bits ..
     
 begin
 
@@ -123,7 +153,7 @@ begin
     -- Spartan-6
     IBUFG_inst : IBUFG
     generic map (
-        IBUF_LOW_PWR => TRUE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
+        IBUF_LOW_PWR => false, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
         IOSTANDARD => "DEFAULT"
     )
     port map (
@@ -131,7 +161,21 @@ begin
         I => i_clk50m -- Clock buffer input (connect directly to top-level port)
     );
     -- End of IBUFG_inst instantiation
-    
+
+
+    -- clocking for dac
+    -- single ended to differental IO driver block.. (Xilinx)
+    OBUF_inst : OBUF
+        generic map (
+            DRIVE => 4,
+            IOSTANDARD => "DEFAULT",
+            SLEW => "FAST"
+        )
+        port map (
+            O => o_dac_clk_p,  --  P clk pin
+            I => not clk_100       --  input clock
+        );  
+
     -- generate synchronious reset signal for
     -- synchronious blocks
     rst_sync : process( clk_50 )
@@ -143,7 +187,10 @@ begin
                 srst_100 <= '1'; -- 100 MHZ clk domain in reset
                 clk_100_dcm_rst <= '1'; -- dcm in reset at startup
                 -- timer to hold design in reset untill clocks are good.
-                reset_timer <= (others=>'0');
+                -- for simulation hot wire this to 0xFFFF to by pass timer.
+                reset_timer <= x"FFFF";
+                -- normal case.
+                --reset_timer <= (others=>'0');
             else
                 -- reset timer expires
                 if ( reset_timer = x"FFFF" ) then 
@@ -207,15 +254,38 @@ begin
             o_led           => o_led
        );
 
+    u_mojo_modulator : mojo_modulator
+    generic map(
+        ftw_reg0_addr   => 8,  -- address in memory of this register
+        ftw_reg1_addr   => 9,  -- "
+        ftw_reg2_addr   => 10, -- "
+        ftw_reg3_addr   => 11 -- "
+    )
+    port map (
+        -- Databus Clock & reset ---------------------------------
+        i_clk_db        => clk_50, 
+        i_srst_db       => srst_50,
+        -- Databus signals ---------------------------------------
+        i_db_addr       => db_addr,
+        i_db_wdata      => db_wdata,
+        o_db_rdata      => db_rdata,
+        i_db_rstrb      => db_rstrb,
+        i_db_wstrb      => db_wstrb,
+        -- DSP Sample Clocks & Reset ----------------------------- 
+        i_clk_dsp       => clk_100,
+        i_srst_dsp      => srst_100,
+        ---DSP Samples Out ---------------------------------------
+        o_dac_samples   => dac_sample
+    );
 
-    -- currently not used, just tied to '0'
-    o_dac_pin_mode       <= '0'; 
-    o_dac_sleep          <= '0';
-    o_dac_mode           <= '0';
-    o_dac_cmode          <= '0';
-    o_dac_clk_p          <= '0';
-    o_dac_clk_n          <= '0';
-    o_dac_DB             <= (others=>'0');
+    -- dac setup
+    o_dac_pin_mode       <= '1';  -- place dac in pin mode..
+    o_dac_sleep          <= '0';  -- dac not sleeping
+    o_dac_mode           <= '1';  -- 2's complement samples 
+    o_dac_cmode          <= '0';  -- use single ended clocking
+    --o_dac_clk_p          <= '0';
+    o_dac_clk_n          <= '0';  -- not used, tie low.
+    o_dac_DB             <= dac_sample(15 downto 4); -- scale down to top most 12 bits.
  
 
 end architecture system;

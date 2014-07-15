@@ -137,6 +137,7 @@ architecture system of mojo_top is
     -- DCM clock signals
     signal clk_100m          : std_logic; -- 100 Mhz clock before global buffer.
     signal clk_100           : std_logic; --  100 MHz clock
+    signal clk_100n          : std_logic; -- inverted clock
     signal dac_clk           : std_logic;
     signal clk_100_locked    : std_logic; --  clock 100 is locked. (for srst_100) 
     signal clk_100_dcm_rst   : std_logic; --  reset for dcm
@@ -146,6 +147,8 @@ architecture system of mojo_top is
     signal dac_sample        : signed(15 downto 0);  -- gets scaled to 12 bits ..
     
 begin
+
+    clk_100n <= not clk_100;
 
     -- IO Interface and clocking stuff here.....
 
@@ -173,7 +176,7 @@ begin
         )
         port map (
             O => o_dac_clk_p,  --  P clk pin
-            I => not clk_100       --  input clock
+            I => clk_100n      --  input clock
         );  
 
     -- generate synchronious reset signal for

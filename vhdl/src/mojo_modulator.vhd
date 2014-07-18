@@ -138,16 +138,16 @@ begin
                     -- data bus read..
                     if ( i_db_rstrb = '1' ) then
                         if ( i_db_addr = ftw_reg0_addr_stl ) then
-                            o_db_rdata <= std_logic_vector( ftw_reg(7 downto 0));
+                            o_db_rdata <= std_logic_vector( ftw_reg_working(7 downto 0));
                         end if;
                         if ( i_db_addr = ftw_reg1_addr_stl ) then
-                            o_db_rdata <= std_logic_vector( ftw_reg(15 downto 8));
+                            o_db_rdata <= std_logic_vector( ftw_reg_working(15 downto 8));
                         end if;
                         if ( i_db_addr = ftw_reg2_addr_stl ) then
-                            o_db_rdata <= std_logic_vector( ftw_reg(23 downto 16));
+                            o_db_rdata <= std_logic_vector( ftw_reg_working(23 downto 16));
                         end if;
                         if ( i_db_addr = ftw_reg3_addr_stl ) then
-                            o_db_rdata <= std_logic_vector( ftw_reg(31 downto 24));
+                            o_db_rdata <= std_logic_vector( ftw_reg_working(31 downto 24));
                         end if;
                         -- if none of our register are being addressed.
                         if ( i_db_addr /= ftw_reg0_addr_stl ) and 

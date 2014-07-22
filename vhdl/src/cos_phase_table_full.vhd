@@ -1,11 +1,13 @@
 -----------------------------------------------------------
--- cos_phase_table.vhd
+-- cos_phase_table_full.vhd
 --
 -- Lookup 16bit value from a cos(x) table.
 --
 -- This version implementats the full period table.
 -- a full period table works better in higher speed designs
 -- because the math logic causes to much delays for the clock rates
+--
+-- Interface the same as the normal cos_phase_table.vhd file.. 
 --
 --
 -- y = cos(x)  -- where x is digital phase Q
@@ -41,7 +43,7 @@ architecture system of cos_phase_table is
 
     constant memory_depth : integer := 2**phase_depth;  -- how many memory entries do we need.
     constant SCALE : real := real((2**(real(sample_depth)-1.0))-1.0);  -- cos is normal 1.0 we want 2^(N-1)-1 (will all be positive values)
-    constant STEP  : real := MATH_2_PI/(real(2**phase_depth)); -- phase increment per table entry)
+    constant STEP  : real := 1.0/(real(2**phase_depth)); -- phase increment per table entry)
  
     -- memory table is 1/4 cos period, 1024 phase enteries of 16 bit samples
     -- taking advantage of cos symmetry for the other 3/4 of the period.

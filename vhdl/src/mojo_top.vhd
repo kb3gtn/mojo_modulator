@@ -135,20 +135,20 @@ architecture system of mojo_top is
     signal srst_50          : std_logic;  -- 50 MHz sync reset, active high..
 
     -- DCM clock signals
-    signal clk_100m          : std_logic; -- 100 Mhz clock before global buffer.
-    signal clk_100           : std_logic; --  100 MHz clock
-    signal clk_100n          : std_logic; -- inverted clock
+    signal clk_120m          : std_logic; -- 100 Mhz clock before global buffer.
+    signal clk_120           : std_logic; --  100 MHz clock
+    signal clk_120n          : std_logic; -- inverted clock
     signal dac_clk           : std_logic;
-    signal clk_100_locked    : std_logic; --  clock 100 is locked. (for srst_100) 
-    signal clk_100_dcm_rst   : std_logic; --  reset for dcm
-    signal srst_100          : std_logic; --  sync reset for 100 MHz clock domain (active high)
+    signal clk_120_locked    : std_logic; --  clock 100 is locked. (for srst_120) 
+    signal clk_120_dcm_rst   : std_logic; --  reset for dcm
+    signal srst_120          : std_logic; --  sync reset for 100 MHz clock domain (active high)
 
     -- dac samples (from modulator)
     signal dac_sample        : signed(15 downto 0);  -- gets scaled to 12 bits ..
     
 begin
 
-    clk_100n <= not clk_100;
+    clk_120n <= not clk_120;
 
     -- IO Interface and clocking stuff here.....
 
@@ -176,7 +176,7 @@ begin
         )
         port map (
             O => o_dac_clk_p,  --  P clk pin
-            I => clk_100n      --  input clock
+            I => clk_120n      --  input clock
         );  
 
     -- generate synchronious reset signal for
@@ -187,8 +187,8 @@ begin
             if ( i_rst_n = '0' ) then
                 -- reset active
                 srst_50 <= '1'; -- 50 MHz clk domain in reset
-                srst_100 <= '1'; -- 100 MHZ clk domain in reset
-                clk_100_dcm_rst <= '1'; -- dcm in reset at startup
+                srst_120 <= '1'; -- 100 MHZ clk domain in reset
+                clk_120_dcm_rst <= '1'; -- dcm in reset at startup
                 -- timer to hold design in reset untill clocks are good.
                 -- for simulation hot wire this to 0xFFFF to by pass timer.
                 reset_timer <= x"FFFF";
@@ -198,10 +198,10 @@ begin
                 -- reset timer expires
                 if ( reset_timer = x"FFFF" ) then 
                     srst_50 <= '0'; -- 50 MHZ reset will now de-assert..
-                    clk_100_dcm_rst <= '0'; -- start PLL, XO is stable..
+                    clk_120_dcm_rst <= '0'; -- start PLL, XO is stable..
                     -- wait for PLL lock before releasing 100 MHz reset.
-                    if ( clk_100_locked = '1' ) then 
-                        srst_100 <= '0'; -- start design up
+                    if ( clk_120_locked = '1' ) then 
+                        srst_120 <= '0'; -- start design up
                     end if;
                 else
                     -- reset time is not expired..
@@ -217,10 +217,10 @@ begin
             -- Clock in ports
             CLK_IN1 => clk_50,
             -- Clock out ports
-            CLK_OUT1 => clk_100,
+            CLK_OUT1 => clk_120,
             -- Status and control signals
-            RESET  => clk_100_dcm_rst,
-            LOCKED => clk_100_locked
+            RESET  => clk_120_dcm_rst,
+            LOCKED => clk_120_locked
         );
 
     -- high level system blocks here...............
@@ -275,8 +275,8 @@ begin
         i_db_rstrb      => db_rstrb,
         i_db_wstrb      => db_wstrb,
         -- DSP Sample Clocks & Reset ----------------------------- 
-        i_clk_dsp       => clk_100,
-        i_srst_dsp      => srst_100,
+        i_clk_dsp       => clk_120,
+        i_srst_dsp      => srst_120,
         ---DSP Samples Out ---------------------------------------
         o_dac_samples   => dac_sample
     );

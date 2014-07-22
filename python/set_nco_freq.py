@@ -11,7 +11,7 @@ import time
 import sys
 
 # constant
-sample_rate = 80e6
+sample_rate = 120e6
 reg0_addr = 8
 reg1_addr = 9
 reg2_addr = 10

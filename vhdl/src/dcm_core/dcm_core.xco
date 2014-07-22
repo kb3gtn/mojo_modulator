@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Fri Jul 18 21:20:25 2014
+# Date: Fri Jul 18 22:50:52 2014
 #
 ##############################################################
 #
@@ -70,7 +70,7 @@ CSET clkin2_jitter_ps=50.0
 CSET clkin2_ui_jitter=100.000
 CSET clkout1_drives=BUFG
 CSET clkout1_requested_duty_cycle=50.000
-CSET clkout1_requested_out_freq=160
+CSET clkout1_requested_out_freq=120
 CSET clkout1_requested_phase=0.000
 CSET clkout2_drives=BUFG
 CSET clkout2_requested_duty_cycle=50.000
@@ -197,7 +197,7 @@ CSET override_pll=false
 CSET platform=lin64
 CSET pll_bandwidth=LOW
 CSET pll_clk_feedback=CLKFBOUT
-CSET pll_clkfbout_mult=16
+CSET pll_clkfbout_mult=12
 CSET pll_clkfbout_phase=0.000
 CSET pll_clkin_period=20.000
 CSET pll_clkout0_divide=5
@@ -266,4 +266,4 @@ CSET use_status=false
 MISC pkg_timestamp=2012-05-10T12:44:55Z
 # END Extra information
 GENERATE
-# CRC: 3f341420
+# CRC: 7114e9a8
